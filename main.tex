@@ -1,0 +1,89 @@
+\documentclass[onecolumn]{article}
+\usepackage{henry}
+\usepackage{gensymb}
+\usepackage[colorinlistoftodos, disable]{todonotes} % add option "disable" to remove todos from pdf output
+\usepackage{import}
+
+% Path to find bibliography databases
+\addbibresource{references/climate.bib}
+\addbibresource{references/datasets.bib}
+\addbibresource{references/ml.bib}
+\addbibresource{references/userrequirements.bib}
+
+% \title{IAI CDT Summer Project Report\\ Machine learning emulation of a local-scale UK climate model}
+
+% \author[1]{Henry Addison}
+% \author[2]{Peter Watson}
+% \author[1]{Laurence Aitchison}
+% \author[2]{Dann Mitchell}
+
+% \affil[1]{Department of Computer Science, University of Bristol}
+% \affil[2]{School of Geographical Sciences, University of Bristol}
+
+% \date{}
+
+\begin{document}
+
+\listoftodos
+
+\todo[color=blue,inline]{Review document (esp. future work) for recording unfinished ideas in a central list for later consideration}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+
+        \Huge
+        \textbf{Machine learning emulation of a local-scale UK climate model}
+
+        \vspace{0.5cm}
+        \LARGE
+        APR Report
+
+        \vspace{1.5cm}
+
+        \textbf{Henry Addison}
+
+        Supervised by Peter Watson, Laurence Aitchison
+
+        \vfill
+
+        \vspace{0.8cm}
+
+        \Large
+        Interactive AI CDT\\
+        University of Bristol\\
+        UK\\
+        April 2022
+
+    \end{center}
+\end{titlepage}
+
+
+% \begin{abstract}
+
+% Climate change is causing the intensification of rainfall extremes. Precipitation projections with high spatial resolution are important for society to adapt to and mitigate these changes. Physics-based simulations for creating such projections are computationally expensive. The natural variability of precipitation in both time and space means multiple projections are required by users of projections in order to cope with this uncertainty. Generative machine learning models offer approaches for generating further projections from lower resolution projections more cheaply, effectively emulating a high-resolution, physics-based model.
+
+% Climate datasets can be hard to work with as well as being expensive to create. Data consumers may find that the data they desire are not available or not understand their limitations. Potential users of this emulator were interviewed for the purpose of learning user requirements. This established the need for more high-resolution rainfall data that is trustworthy and the difficulties in defining extreme events to suit all use cases. From these user requirements an in-progress method is developed for designing and evaluating a variational autoencoder trained to be a high-resolution rainfall model emulator.
+
+% \end{abstract}
+
+\import{./sections}{00_cover.tex}
+\pagebreak
+
+\import{./sections}{01_intro.tex}
+
+\import{./sections}{02_downscalingbg.tex}
+\import{./sections}{03_mlbg.tex}
+% For brevity of APR report, removing user requirements work from this report
+
+\import{./sections}{06_emulatorstudy.tex}
+
+\import{./sections}{07_future.tex}
+
+\import{./sections}{08_conclusion.tex}
+
+\import{./sections}{09_ack.tex}
+
+\printbibliography
+
+\end{document}

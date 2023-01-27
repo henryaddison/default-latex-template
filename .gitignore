@@ -1,0 +1,16 @@
+# Latex build files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+main.log
+main.out
+main.pdf
+*.run.xml
+*.synctex.gz
+*.synctex(busy)
+*.tdo
+indent.log
+desktop.ini

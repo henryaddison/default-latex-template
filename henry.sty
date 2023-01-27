@@ -1,0 +1,38 @@
+\ProvidesPackage{henry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, rmargin=1.25in, lmargin=1.25in, tmargin=1in, bmargin=1.5in]{geometry}
+\usepackage{comment}
+\usepackage{graphicx}
+\usepackage[svgnames]{xcolor}
+\usepackage{lscape}
+\usepackage{scalerel}
+
+% Multi-image figures
+\usepackage{subcaption}
+
+% Maths notation
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage[load-configurations = abbreviations]{siunitx}
+
+% Author
+\usepackage{authblk}
+
+
+% Packages for Citations & Bibliography
+\usepackage[autostyle=false, style=english]{csquotes}
+\usepackage{xpatch}
+\usepackage[british]{babel}
+\usepackage[backend=biber,style=ieee, mincitenames=1, maxcitenames=2]{biblatex}
+% \usepackage[backend=biber,style=apa,backref=true]{biblatex}
+\usepackage{hyperref}
+% \DeclareLanguageMapping{british}{british-apa}
+
+% Colours of Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan}

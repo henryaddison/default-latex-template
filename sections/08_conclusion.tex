@@ -1,0 +1,5 @@
+\section{Conclusion} \label{sec:conclusion}
+
+High-resolution projections of precipitation are needed to more effectively adapt to future changes in precipitation. However, to make predictions solely with numerical climate simulations is very expensive. A solution is to use machine learning to fit a mapping from cheaper, low-resolution climate projections to high-resolution precipitation. Generative models allow for both fast sample generation which can contain detail (compared to more blurry deterministic approaches like U-Net) and to generate more samples without needing new inputs. The samples from such a model will complement the simulation-based projections.
+
+Score-based generative models offer a good trade-off over sampling cost, sample diversity and sample quality. The next steps are to continue training and evaluating a score-based generative model that can efficiently produce realistic, stochastic samples of high-resolution rainfall based on coarsened inputs. Once this is complete there are numerous other opportunities for improving the skill and utility of the emulator so that it can be put to use by organizations such as the Met Office.

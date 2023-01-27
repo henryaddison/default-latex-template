@@ -1,0 +1,9 @@
+predictands
+Autoencoder
+autoencoder
+GLMs
+re-gridding
+Rainnet
+GANs
+
+GAN

@@ -1,0 +1,1 @@
+{"rule":"MORFOLOGIK_RULE_EN_GB","sentence":"^\\QThis allows better ability to represent convective storms and more credible estimates of changes in convectively-driven phenomena, such as hourly rainfall extremes \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q.\\E$"}

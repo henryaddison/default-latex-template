@@ -1,0 +1,17 @@
+\section{Future Work} \label{sec:future}
+
+There is much more work to be carried out. The most important are assessing the performance of the emulator on much more extreme events and generalizing to other climate models beyond those used in UKCP18. There is also work to be done extending the emulator to higher temporal frequencies, larger geographical domains (to explore longer range spatial correlations) and incorporating expert knowledge of climate scientists.
+
+\subsection{More extreme extremes}
+The extreme test set is roughly the 90th percentile and above (so 1 in 10 day return period). As extremes go, projection consumers are interested in much more extreme events. It will be of interest to study how well the emulator characterizes events with a 1-in-100 year return period.
+
+\subsection{Generalizing to other climate model ensembles}
+The method above describes an emulator trained and tested data from ensemble members of the Met Office's GCM and CPM used for the UKCP18 project. This is one of a number of different set of climate models. Further work will explore how well the emulation process will generalize to downscaling large ensembles of other climate models. As well as producing more samples for climate projections with existing high resolution variables, it would also be of value to downscale climate model projections for which there are not yet dynamically downscaled equivalents. The emulator could thus be a tool to allow climate modellers to decide which temporal and spatial domains and greenhouse gas emission scenarios to target the limited resources available for producing the more expensive dynamically downscaled projections.
+
+\subsection{Higher frequencies and sequences}
+The work so far as focussed on single, daily snapshots of variables. Data of higher temporal frequency is available (down to hourly for precipitation). This higher frequency and the temporal evolution of events is of interest to consumers. There may also be value in working on sequences of inputs and outputs. This may be done by either by considering large blocks at a time or using an autoregressive approach.
+
+\subsection{Incorporating human knowledge}
+The emulator does not use any knowledge of the underlying physical aspects of each pixel. Surface topography is known to have an effect on rainfall. High-resolution digital topography could be added as an input. Alternatively similar information could be included with a simple mean rain field by temporal aggregation of the training set.
+
+Experts could also be involved in the evaluation process. Their knowledge would be helpful to test the realism and plausibility of samples.

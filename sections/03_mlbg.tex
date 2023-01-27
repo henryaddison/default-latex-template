@@ -1,0 +1,74 @@
+\section{Machine learning and natural image super-resolution} \label{sec:mlbg}
+
+Statistical downscaling of the full grid (rather than just a selection of observation stations) can be considered as similar to the super-resolution problem of natural images. The grid squares of the GCM and CPM outputs are like pixels with their intensity corresponding to climate variables such as hourly rainfall (albeit not just integer values between 0 and 255). Therefore I am interested in the extensive application of machine learning and deep generative models in particular to natural image generation and super-resolution. I intend to show that such an approach can be used to generalize beyond the MNIST, CIFAR-10 and ImageNet datasets commonly used to experiment with these models.
+
+\subsection{U-Net}
+
+U-Net \cite{Ronneberger2015unet} has been adapted from its roots in medical image segmentation for rainfall predictions, both with categorical outputs (through binning) \cite{agrawal2019unetforprecip} and continuous outputs \cite{ayzel2020rainnet,ravuri2021deepgenprecip}. \textcite{ravuri2021deepgenprecip} find that it performs well on Critical Score Index (for a given threshold, what proportion of predictions from the model under test are on the same side of the threshold as the original UKCP18 dataset) but at the expense of producing blurry predictions which do not match the fine detail of rainfall events. U-Net is not a probabilistic model and unlikely to show great improvement over other off-the-shelf deep learning approaches as \textcite{vandal2018mldownscaling} found. However, it should serve well as a baseline for comparison with a probabilistic approach.
+
+\subsection{Deep generative models}
+
+Common approaches for state-of-the-art sample generation, probability density estimation and super-resolution of natural images rely on generative models. These include Generative Adversarial Networks (GANs) \cite{karras2018progressive}, Variational Autoencoders (VAEs) \cite{kingma2014vaeorigin}, and autoregressive (AR) models like PixelRNN \cite{vandenoord2016pixelrnn}. More recently Score-Based Generative Models (SCGMs, aka Noise-Conditioned Score Networks and Diffusion Models) \cite{song2019smld, ho2020ddpm, song2021sbgmsde, dharwial2021diffbeatsgans} have shown competitive results in the natural image domain and offer desirable trade-offs compared to other approaches. As was discussed in Section \ref{sec:downscalingbg:statistical}, overall probabilistic models have been under-explored for use in downscaling.
+
+\subsubsection{Generative Adversarial Networks}
+
+GANs show excellent sampling performance in generating sharp, realistic images (both qualitatively and computationally) \cite{karras2018progressive}. GANs \cite{Leinonen2020GANsd,ravuri2021deepgenprecip} have been successfully applied in similar problem domains: short-term forecasting (nowcasting) of sequences of rainfall radar fields and satellite cloud thickness fields.
+
+GANs consist of two neural networks: a generator and a discriminator. The generator learns to create new samples, ideally ones that could come from some true distribution (usually provided in the form of a training dataset) to which the generator does not have direct access. The discriminator learns to tell apart samples from the true distribution from made up ones. By putting them in competition the discriminator gets better at spotting fake samples from the generator compared to real samples from the true distribution and using this signal the generator gets better at making samples which could be from the true distribution \cite{creswell2018ganreview}.
+
+However, GANs do not model the underlying distribution so density estimation is impossible and GANs can suffer from mode collapse \cite{grover2018flowgan} meaning samples from the generator do not cover the full range of the distribution. It can also be difficult to find an optimal solution when training a GAN \cite{creswell2018ganreview}.
+
+\subsubsection{Variational Autoencoders}
+
+VAEs are a form of autoencoder with an encoding step and a decoding step. This encoding and decoding is probabilistic and rather than encoding into a latent space they encode into a latent distribution then decode samples from it \cite{kingma2019vaereview,kingma2014vaeorigin}.
+
+VAEs have been successfully used for image-based problems including generation \cite{gregor2016vaeimagedrawcompression}, super-resolution \cite{liu2021srvae} and labelling and segmentation \cite{sohn2015conditionalvae}. An advantage of the autoencoder approach is it allows for simple manipulation in the latent space which lead to complex, meaningful changes in the pixel-space \cite{kulkarni2015dcign, white2016vaelatentmanip}. The latent representation can also be used to feed other models thus allowing the use of VAEs with other approaches like GANs \cite{larsen2016vaegan} or autoregressive models (e.g. PixelVAE\cite{gulrajani2017pixelvae}).
+
+\subsubsection{Autoregressive models}
+
+An AR approach like PixelRNN \cite{vandenoord2016pixelrnn} can provide exact evaluation of the probability density of new points (unlike GANs and VAEs) and probabilistic sampling (unlike GANs) \cite{grover2018flowgan,kingma2019vaereview,Kobyzev2020nfreview}. They show competitive density estimation performance in the domain of natural images \cite{ho2019flowpp}.
+
+AR models use recurrent networks to learn a joint distribution by using the probability chain rule and conditional distributions over the previous pixels (adapted for the particular context of this project to include conditioning on the inputs from a GCM for each pixel):
+
+\begin{equation}
+    p(\mathbf{x_{1:N}}|\mathbf{g_{1:M}}) = \prod_{i=1}^{N} p(x_i|\mathbf{x_{1:i-1}},\mathbf{g_{1:M}})
+\end{equation}
+where \(\mathbf{x_{1:n}}\) denotes the first n pixels (going from top-left to bottom-right row-by-by) and \(\mathbf{g_{1:M}}\) the whole corresponding GCM input. The special case \(p(x_1|\mathbf{x_{1:0}}, \mathbf{g_{1:M}}\) is interpreted as simply \(p(x_1|\mathbf{g_{1:M}})\).
+
+The downside of this autoregressive approach is that sampling is a sequential process making it slow (O(N)) compared to VAEs. It has been shown for PixelCNN (an approach similar to and competitive with PixelRNN but computationally cheaper \cite{vandenoord2016pixelcnn}) that this can be improved to O(logN) \cite{reed2017pixelcnnfastersampling}. Sampling from an AR model will be much faster than running an RCM but won't match the sampling performance of a VAE approach even with this improvement.
+
+\subsubsection{Score-Based Generative Model}
+
+Probabilistic models assume that observed data, such as high-resolution rainfall over the UK, is drawn from an unknown distribution \(p^*(\mathbf{x})\). A conditional model such as high-resolution rainfall conditioned on coarse GCM inputs \(p^*(\mathbf{x}|\mathbf{g})\) can also be considered but for simplicity this section will stick with the context free version.
+
+\textcite{song2021sbgmsde} combine earlier approaches \cite{song2019smld, ho2020ddpm} into a single framework called Score-Based Generative Models with Stochastic Differential Equations (SDE). The idea is to imagine a diffusion process \(\{\mathbf{x}(t)_{t=0}^{T}\}\) modelled by an SDE:
+
+\begin{equation}
+  \mathrm{d}\mathbf{x} = \mathbf{f}(\mathbf{x}, t)\mathrm{d}t + g(t)d\mathbf{w}
+\end{equation}
+
+When run forward a sample, \(\mathbf{x}(0)\), from the data distribution, \(p_0\), is gradually perturbed over time into a sample from a final noise distribution, \(p_T\), somewhat like how a structured gas sample will gradually diffuse randomly across a room. The final distribution is chosen as something tractable for sampling, usually a Gaussian.
+
+More interesting for us is running the diffusion process backwards:
+
+\begin{equation} \label{eqn:mlbg:reversesde}
+  \mathrm{d}\mathbf{x} = [\mathbf{f}(\mathbf{x}, t) - g(t)^2 \nabla_{\mathbf{x}}\log{p_{t}(x)}]{d}t + g(t)d\bar{\mathbf{w}}
+\end{equation}
+
+By solving this, samples from \(p_T\) (which is easy by design) can be converted into samples from the original data distribution. This requires two steps: calculating the score, \(\nabla_{\mathbf{x}}\log{p_{t}(x)}\), and then applying numerical approaches to solve Equation \ref{eqn:mlbg:reversesde}.
+
+The score is estimated as a neural net \(s_\theta(\mathbf{x}, t)\) where \(\theta\) are determined by minimizing:
+
+\begin{equation}
+  \mathbb{E}_t \{
+    \lambda(t) \mathbb{E}_{\mathbf{x}(0)} \mathbb{E}_{\mathbf{x}(0) | \mathbf{x}(t)}
+      \left[
+        || s_\theta(\mathbf{x}(t), t) -  \nabla_{\mathbf{x}(t)}\log{p_{0t}(\mathbf{x}(t) | \mathbf{x}(0))} ||_2^2
+      \right
+    \}
+\end{equation}
+where \(\lambda\) is a positive weighting function that is chosen along with f and g.
+
+\textcite{song2021sbgmsde} summarize three approaches for solving the reverse SDE. General-purpose numerical methods can be used to find approximate solutions to the SDE. Predictor-Corrector sampling takes this a step further by using making use of estimated score at each timestep to apply a correction to the sample estimated at that timestep by the general purpose solver. Alternatively the problem can be reformulated as a deterministic process without affecting the trajectory probabilities and in turn solved using an ODE solver.
+
+Diffusion models show excellent performance in problems in the natural image domain \cite{dharwial2021diffbeatsgans, song2021sbgmsde}. Diffusion models offer a good trade-off in terms of sample sharpness (VAEs tend to produce blurry samples), sample diversity (no mode collapse like GANs) and sampling cost (more efficient than AR). They have not been applied in the domain of climate model downscaling.
